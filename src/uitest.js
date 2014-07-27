@@ -65,13 +65,20 @@ function create() {
     }
     y += 10;
     
-    
+    /*
     panelMask = game.add.image(0,0,"panelMask");
     panelMask.anchor.setTo(0.5, 0.5);
     panelMask.x = panel.x + panel.width/2;
     panelMask.y = panel.y + panel.height/2;
     panelMask.z = 1;
+    */
+
     
+    var myMask = new PIXI.Graphics();
+    myMask.beginFill();
+    myMask.drawRect(panel.x-1, panel.y+1, panel.width+1, panel.height-2);
+    myMask.endFill();
+    panelGroup.mask = myMask;
 
     scrollCircle.inputEnabled = true;
     scrollCircle.input.enableDrag(false, false, false, 255, 
@@ -79,7 +86,6 @@ function create() {
                                                        scrollCircle.width, scrollLine.height));
     scrollCircle.input.allowHorizontalDrag = false;
 
-    //var test = game.add.image(panelGroup.x, y+panelGroup.y, "ui", "grey_circle.png");
 
     contentSize = y;
     windowSize = panel.height;
