@@ -97,6 +97,10 @@ function create() {
     trackScrollAreaSize = trackSize - scrollCircle.height; 
 
     dragRatio = windowScrollAreaSize / trackScrollAreaSize;
+
+    var scrollpanel = new Rustica.UI.Scrollpanel("hi there");
+    scrollpanel.sayMsg();
+    console.log(scrollpanel.getMsg());
 }
 
 function update() {
