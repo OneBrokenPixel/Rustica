@@ -10,7 +10,7 @@ var cropModule = ( function() {
 	
 	Crop.prototype.toString = function()
 	{
-		return this.name + " " + this.growthRate + " " + this.value;
+		return this.name + " " + this.growthTime + " " + this.value;
 	};
 	
 	var crops = [ new Crop("Empty",0.0,0), new Crop("Wheat",2.0,1), new Crop("Potato",1.0,2), new Crop("Carrot",0.5,3)];
@@ -58,62 +58,26 @@ var cropModule = ( function() {
 		addField : function(){
 		},
 
-		removeAt : function(index){
+		removeFieldAt : function(index){
 		},
 
-		get : function(index){
+		getField : function(index){
+			return fields[index];
+		},
+
+		getFields : function() {
+		 	return fields;
+		},
+
+		getCrops : function() {
+		 	return crops;
 		}
-
-
-
 	};
 	
 
 	
 })();
 	
-/*
-function Crop(name, growthTime, value)
-{
-	this.name = name;
-	this.growthTime = growthTime;
-	this.value = value
-}
-
-Crop.prototype.toString = function()
-{
-	return this.name + " " + this.growthRate + " " + this.value;
-}
-
-
-
-var crops = [ new Crop("Wheat",2.0), new Crop("Potato",1.0), new Crop("Carrot",0.5)];
-
-console.log("Crops: " + crops);
-
-function Field(crop,size)
-{
-	this.crop = crop
-	this.size = size
-	this.timeToHarvest 
-}
-
-Field.prototype.toString = function()
-{
-	return this.crop + " " + this.size;
-}
-
-Field.prototype.resize = function( size )
-{
-	this.size = size;
-}
-
-Field.prototype.plant = function(crop)
-{
-	this.crop = crop;
-	
-}
-
-*/
+console.log("Crops: " + cropModule.getCrops());
 
 
