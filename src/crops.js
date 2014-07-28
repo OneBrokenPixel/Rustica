@@ -33,13 +33,15 @@ var cropModule = (function() {
     function CropField() {
         this.crop = crops[0]; // crop that is here.
         this.timeOfHarvest = 0.0; // time that the crop can be harvested.
+        Field.call(this);
     }
     ;
 
-    CropField.prototype = new Field();
+    CropField.prototype = Object.create(Field.prototype);
+    CropField.prototype.constructor = CropField;
     
     CropField.prototype.toString = function() {
-        return this.crop + " " + this.size;
+        return Field.prototype.toString() + " " + this.crop + " " + this.size;
     };
 
     CropField.prototype.plant = function(crop, time) {
@@ -54,6 +56,16 @@ var cropModule = (function() {
 
         return totalValue;
     }
+    
+    CropField.prototype.isHarvestTime = function(time) {
+    	return time >= this.timeOfHarvest;
+    }
+    
+    CropField.prototype.harvestTime = function(time){
+    	return time / this.timeOfHarvest;
+    }
+    
+    
 
     var cropFields = [];
 
