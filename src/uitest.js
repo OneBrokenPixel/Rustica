@@ -99,8 +99,12 @@ function create() {
     dragRatio = windowScrollAreaSize / trackScrollAreaSize;
 
     var scrollpanel = new Rustica.UI.Scrollpanel("hi there");
-    scrollpanel.sayMsg();
-    console.log(scrollpanel.getMsg());
+    //scrollpanel.sayMsg();
+    //console.log(scrollpanel.getMsg());
+
+    var childpanel = new ScrollpanelChild("new panel");
+    console.log(childpanel.getChildMsg());
+    childpanel.sayMsg();
 }
 
 function update() {
