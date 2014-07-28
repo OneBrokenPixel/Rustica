@@ -98,19 +98,22 @@ function create() {
 
     dragRatio = windowScrollAreaSize / trackScrollAreaSize;
 
-    var scrollpanel = new Rustica.UI.Scrollpanel("hi there");
-    //scrollpanel.sayMsg();
-    //console.log(scrollpanel.getMsg());
+    this.scrollpanel = new Rustica.UI.Scrollpanel(game, 300, 25, panel.width, panel.height, 
+                                                 new Phaser.Image(game, 0, 0, "panel"));
 
-    var childpanel = new ScrollpanelChild("new panel");
-    console.log(childpanel.getChildMsg());
-    childpanel.sayMsg();
+    for (i=0; i<20; i++) {
+        var button = new Phaser.Button(game, 15, y, "ui", buttonDown, this, 
+                                       "grey_button00.png", "grey_button00.png", 
+                                       "grey_button00.png", "grey_button00.png");
+        button.width *= 0.85;
+        this.scrollpanel.add(button);
+    }
+    
 }
 
 function update() {
-
     panelGroup.y = scrollLine.y - ((scrollCircle.y-scrollLine.y) * dragRatio);
-
+    this.scrollpanel.update();
 }
 
 function render() {
