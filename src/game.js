@@ -1,5 +1,8 @@
 var game = new Phaser.Game(800, 600, Phaser.AUTO, "game", {preload:preload, create:create, update:update, render:render});
 
+var crop;
+var profit = 0.0;
+
 function preload() {
 
     // centre the canvas
@@ -17,9 +20,24 @@ function create() {
 	
 	lammas.scale.x = 2
 	lammas.scale.y = 2
+	
+	crop = cropModule.getCrop("Wheat");
+
+	cropModule.addField()
+	cropModule.getField(0).resize(9);
+	cropModule.getField(0).plant(crop,game.time.totalElapsedSeconds());
 }
 
 function update() {
+	
+	if( cropModule.getField(0).isHarvestTime( game.time.totalElapsedSeconds() ) ) {
+		profit = profit + cropModule.getField(0).harvest();
+		cropModule.getField(0).plant(crop,game.time.totalElapsedSeconds());
+		
+		console.log("Wheat Harvested: " + profit);
+	}
+	
+	
 }
 
 function render() {

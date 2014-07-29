@@ -45,8 +45,10 @@ var cropModule = (function() {
     };
 
     CropField.prototype.plant = function(crop, time) {
-        this.crop = crop;
-        this.timeOfHarvest = time + this.crop.growthTime;
+    	if(crop != null) {
+	        this.crop = crop;
+	        this.timeOfHarvest = time + this.crop.growthTime;
+    	}
     };
 
     CropField.prototype.harvest = function() {
@@ -64,8 +66,6 @@ var cropModule = (function() {
     CropField.prototype.harvestTime = function(time){
     	return time / this.timeOfHarvest;
     }
-    
-    
 
     var cropFields = [];
 
@@ -73,6 +73,7 @@ var cropModule = (function() {
 
         addField : function() {
     		cropFields.push(new CropField())
+    		console.log("Added Field: " + cropFields);
         },
 
         removeFieldAt : function(index) {
@@ -87,13 +88,15 @@ var cropModule = (function() {
         },
 
         getField : function(index) {
-        	if(index >= 0 && index < cropFields.length) {
-        		return cropFields[index];
-        	}
-        	else
-        	{
-        		return null;
-        	}
+        	if( typeof(index) == "number"){
+	        	if(index >= 0 && index < cropFields.length) {
+	        		return cropFields[index];
+	        	}
+	        	else
+	        	{
+	        		return null;
+	        	}
+	        }
         	
         },
 
@@ -102,12 +105,20 @@ var cropModule = (function() {
         },
 
         getCrop : function(index) {
-        	if(index >= 0 && index < crops.length){
-        		return crops[index];
+        	var type = typeof(index);
+        	if( type == "number"){
+	        	if(index >= 0 && index < crops.length){
+	        		return crops[index];
+	        	}
+        	} else if( type == "string" ) {
+        		var c;
+        		for( c in crops ){
+        			if( crops[c].name == index ) {
+        				return crops[c];
+        			}
+        		}
         	}
-        	else {
-        		return null;
-        	}
+        	return null;
         },
 
         getCrops : function() {
@@ -117,4 +128,4 @@ var cropModule = (function() {
 
 })();
 
-console.log("Crops: " + cropModule.getCrops());
+//console.log("Crops: " + cropModule.getCrops());
