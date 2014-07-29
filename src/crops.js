@@ -1,4 +1,11 @@
 
+
+var profit = 20.0;
+
+Number.prototype.clamp = function(min, max) {
+  return Math.min(Math.max(this, min), max);
+};
+
 function Field() {
     this.size = 0;
 };
@@ -15,11 +22,12 @@ Field.prototype.resize = function(size) {
 
 var cropModule = (function() {
 
-    function Crop(name, growthTime, value) {
+    function Crop(name, growthTime, value, cost) {
         this.name = name; // name of the crop
         this.growthTime = growthTime; // time in seconds untill it can be
                                         // harvested
         this.value = value; // value per unit.
+        this.cost = cost
     }
     ;
 
@@ -27,8 +35,8 @@ var cropModule = (function() {
         return this.name + " " + this.growthTime + " " + this.value;
     };
 
-    var crops = [ new Crop("Empty", 0.0, 0), 	new Crop("Wheat", 2.0, 1),
-                  new Crop("Potato", 1.0, 2), 	new Crop("Carrot", 0.5, 3) ];
+    var crops = [ new Crop("Empty",  0.0, 0, 0.0), 	new Crop("Wheat",  2.0, 1, 0.1),
+                  new Crop("Potato", 1.0, 2, 0.2), 	new Crop("Carrot", 0.5, 3, 0.3) ];
 
     function CropField() {
         this.crop = crops[0]; // crop that is here.
@@ -45,7 +53,8 @@ var cropModule = (function() {
     };
 
     CropField.prototype.plant = function(crop, time) {
-    	if(crop != null) {
+    	if(crop != null && this.size > 0) {
+    		
 	        this.crop = crop;
 	        this.timeOfHarvest = time + this.crop.growthTime;
     	}
@@ -64,7 +73,7 @@ var cropModule = (function() {
     }
     
     CropField.prototype.harvestTime = function(time){
-    	return time / this.timeOfHarvest;
+    	return (time / this.timeOfHarvest).clamp(0,1);
     }
 
     var cropFields = [];
