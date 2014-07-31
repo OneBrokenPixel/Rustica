@@ -50,7 +50,15 @@ Rustica.UI.Scrollpanel = function (game, x, y, width, height, backgroundImg, mas
                                                     this.grip.width, this._trackHeight));
     this.grip.input.allowHorizontalDrag = false;
     
-    
+        
+    /*
+    panelMask = game.add.image(0,0,"panelMask");
+    panelMask.anchor.setTo(0.5, 0.5);
+    panelMask.x = panel.x + panel.width/2;
+    panelMask.y = panel.y + panel.height/2;
+    panelMask.z = 1;
+    */
+
     var mask = new PIXI.Graphics();
     mask.beginFill();
     mask.drawRect(x, y, width, height);

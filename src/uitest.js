@@ -11,6 +11,9 @@ function preload() {
     game.load.image("panel", "assets/ui/panel.png");
     game.load.image("panelMask", "assets/ui/panelMask.png");
     game.load.image("grip", "assets/ui/grip.png.");
+
+    game.load.image("hline", "assets/ui/hline.png");
+    game.load.image("tab", "assets/ui/tab.png");
 }
 
 var panel;        // window
@@ -32,18 +35,11 @@ var dragRatio;
 
 function create() {
     game.stage.backgroundColor = "#FFFFFF";
-    
-    /*
-    panelMask = game.add.image(0,0,"panelMask");
-    panelMask.anchor.setTo(0.5, 0.5);
-    panelMask.x = panel.x + panel.width/2;
-    panelMask.y = panel.y + panel.height/2;
-    panelMask.z = 1;
-    */
+
 
 
     var panel = new Phaser.Image(game, 0,0, "panel");
-    this.scrollpanel = new Rustica.UI.Scrollpanel(game, 300, 25, panel.width, panel.height, panel);
+    this.scrollpanel = new Rustica.UI.Scrollpanel(game, 20, 25, panel.width, panel.height, panel);
 
     for (i=0; i<100; i++) {
         var button = new Phaser.Button(game, 0, 0, "ui", buttonDown, this, 
@@ -53,8 +49,9 @@ function create() {
         this.scrollpanel.addItem(button);
     }
     
-
-
+    var tabs = new Rustica.UI.TabWindow(game, this.scrollpanel.x+panel.width+50, 25, panel.width*2, panel.height);
+    tabs.addPanel("tab one");
+    tabs.addPanel("tab two");
 }
 
 function update() {
