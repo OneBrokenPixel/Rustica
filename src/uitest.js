@@ -1,4 +1,4 @@
-var game = new Phaser.Game(1024, 600, Phaser.AUTO, "game", {preload:preload, create:create, update:update, render:render});
+var game = new Phaser.Game(1024, 800, Phaser.AUTO, "game", {preload:preload, create:create, update:update, render:render});
 
 function preload() {
 
@@ -49,9 +49,11 @@ function create() {
         this.scrollpanel.addItem(button);
     }
     
+    this.scrollpanel.resize(panel.width + 50, panel.height+50);
+
     var tabs = new Rustica.UI.TabWindow(game, this.scrollpanel.x+panel.width+50, 25, panel.width*2, panel.height);
-    tabs.addPanel("tab one");
-    tabs.addPanel("tab two");
+    //tabs.addPanel("tab one");
+    //tabs.addPanel("aaaa", this.scrollpanel);
 }
 
 function update() {
