@@ -39,7 +39,7 @@ function create() {
 
 
     var panel = new Phaser.Image(game, 0,0, "panel");
-    this.scrollpanel = new Rustica.UI.Scrollpanel(game, 20, 25, panel.width, panel.height, panel);
+    this.scrollpanel = new Rustica.UI.Scrollpane(game, 20, 25, panel.width, panel.height, panel);
 
     for (i=0; i<100; i++) {
         var button = new Phaser.Button(game, 0, 0, "ui", buttonDown, this, 
@@ -49,7 +49,7 @@ function create() {
         this.scrollpanel.addItem(button);
     }
     
-    this.scrollpanel.resize(panel.width + 50, panel.height+50);
+    //this.scrollpanel.resize(panel.width + 50, panel.height+50);
 
     var tabs = new Rustica.UI.TabWindow(game, this.scrollpanel.x+panel.width+50, 25, panel.width*2, panel.height);
     //tabs.addPanel("tab one");
