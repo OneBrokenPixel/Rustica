@@ -1,4 +1,4 @@
-Rustica.UI.TabWindow = function (game, x, y, width, height, backgroundImg) {
+Rustica.UI.TabWindow = function (game, x, y, width, height) {
     Phaser.Group.call(this, game);
 
     this.game = game;
@@ -16,11 +16,11 @@ Rustica.UI.TabWindow = function (game, x, y, width, height, backgroundImg) {
     this.tabWidth = 100;
     this.tabHeight = 30;
 
-    this.hlineLeft = new Phaser.Image(game, 0, this.tabHeight, "hline");
+    this.hlineLeft = new Phaser.Image(game, 0, -1, "hline");
     this.hlineLeft.width = width;
     this.add(this.hlineLeft);
 
-    this.hlineRight = new Phaser.Image(game, 0, this.tabHeight, "hline");
+    this.hlineRight = new Phaser.Image(game, 0, -1, "hline");
     this.hlineRight.width = 0;
     this.hlineRight.x = this.hlineLeft.x + width;
     this.add(this.hlineRight);
@@ -29,8 +29,19 @@ Rustica.UI.TabWindow = function (game, x, y, width, height, backgroundImg) {
 Rustica.UI.TabWindow.prototype = Object.create(Phaser.Group.prototype);
 Rustica.UI.TabWindow.prototype.constructor = Rustica.UI.TabWindow;
 
+Rustica.UI.TabWindow.prototype.addPane = function (name, backgroundImg) {
+    var pane = new Rustica.UI.Pane(this.game, this.x, this.y, this.w, this.h, backgroundImg);
+    this._addTab(name, pane);
+    return pane;
+};
 
-Rustica.UI.TabWindow.prototype.addPanel = function (name, panel) {
+Rustica.UI.TabWindow.prototype.addScrollpane = function (name, backgroundImg, maskImg) {
+    var pane = new Rustica.UI.Scrollpane(this.game, this.x, this.y, this.w, this.h, backgroundImg, maskImg);
+    this._addTab(name, pane);
+    return pane;
+};
+
+Rustica.UI.TabWindow.prototype._addTab = function (name, pane) {
 
     // tabPanel.btn : the button at the top of the window used to switch between panels
     // tabPanel.content : what gets displayed when you switch to that panel
@@ -39,21 +50,11 @@ Rustica.UI.TabWindow.prototype.addPanel = function (name, panel) {
     // create the tab panel as an object
     var tabPanel = {};
 
-    tabPanel.btn = new Phaser.Button(this.game, this.newTabX, 0, "tab", this.switchTab, this);
+    tabPanel.btn = new Phaser.Button(this.game, this.newTabX, -this.tabHeight, "tab", this.switchTab, this);
     tabPanel.name = name;   // try and keep this unique between tabpanels
     tabPanel.btn.name = tabPanel.name;
     tabPanel.index = this.tabIndex;
-
-    var panel = panel;
-    if (panel) {
-        panel.move(this.x, this.y);
-        panel.resize(this.w, this.h);
-    }
-    else {
-        panel = new Rustica.UI.Scrollpanel(this.game, this.x, this.y+this.tabHeight, 
-                                           this.w, this.h-this.tabHeight);
-    }
-    tabPanel.content = panel;
+    tabPanel.pane = pane;
 
     // add it to our list of panels
     this.tabPanels[tabPanel.name] = tabPanel;
@@ -64,50 +65,43 @@ Rustica.UI.TabWindow.prototype.addPanel = function (name, panel) {
     var text = new Phaser.Text(this.game, 0, 0, name, {font: "18px Arial"});
     text.anchor.setTo(0.5, 0.5);
     text.x = tabPanel.btn.x + tabPanel.btn.width/2;
-    text.y = tabPanel.btn.height/2 + 2;
+    text.y = -this.tabHeight + tabPanel.btn.height/2 + 2;
     this.add(text);
 
-    // if it's the first tab added, display it
-    if (this.tabIndex === 0) {
-        this.switchTab(tabPanel.btn);
-    }
+    this.switchTab(tabPanel.btn);
 
     // update vars ready for next tab to be added
     this.newTabX += this.tabWidth;
     this.tabIndex += 1;
 
-    return tabPanel.content;
+    return tabPanel.pane;
     
 };
 
-Rustica.UI.TabWindow.prototype.switchTab = function (tabBtn) {
+Rustica.UI.TabWindow.prototype.switchTab = function (tab) {
+
+    var tabPanel;
+    if (typeof tab === "string")
+        tabPanel = this.tabPanels[tab];
+    else if (typeof tab === "object")
+        tabPanel = this.tabPanels[tab.name];
 
     // left horiz border
-    var lwidth = tabBtn.x;
+    var lwidth = tabPanel.btn.x;
     this.hlineLeft.width = lwidth;
-
-    var tabPanel = this.tabPanels[tabBtn.name];
 
     // show tab's content
     if (this.currentTabPanel != null) {
-        this.currentTabPanel.content.callAll("kill");
-        this.currentTabPanel.callAll("kill");
+        this.currentTabPanel.pane.content.callAll("kill");
+        this.currentTabPanel.pane.callAll("kill");
     }
 
-    this.currentTabPanel = tabPanel.content;
-    this.currentTabPanel.callAll("revive");
+    this.currentTabPanel = tabPanel;
+    this.currentTabPanel.pane.content.callAll("revive");
+    this.currentTabPanel.pane.callAll("revive");
     
     // right horiz border
-    var rwidth = this.width - tabBtn.x - this.tabWidth;
+    var rwidth = this.width - tabPanel.btn.x - this.tabWidth;
     this.hlineRight.width = rwidth;
-    this.hlineRight.x = tabBtn.x + this.tabWidth;;
+    this.hlineRight.x = tabPanel.btn.x + this.tabWidth;;
 };
-
-
-Rustica.UI.Tabpanel = function (game) {
-    Phaser.Group.call(this, game);
-};
-
-Rustica.UI.Tabpanel.prototype = Object.create(Phaser.Group.prototype);
-Rustica.UI.Tabpanel.prototype.constructor = Rustica.UI.Tabpanel;
-
