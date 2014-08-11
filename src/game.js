@@ -6,8 +6,16 @@ Rustica.UI.ProgressBar = function (game, x, y, width, height, backgroundImg, pro
     Rustica.UI.Pane.call(this, game, x, y, width, height, backgroundImg);
     
     this.progressBarImg = null;
+    this.progressBarWidth = 0;
     this.progressBarOffset = { left:0, right:0, top:0, bottom:0};
     
+    if( progressBarOffset ){
+		this.progressBarOffset.left = progressBarOffset.left;
+        this.progressBarOffset.right = progressBarOffset.right;
+        this.progressBarOffset.top = progressBarOffset.top;
+        this.progressBarOffset.bottom = progressBarOffset.bottom; 
+	}
+
     if(progressBarImg){
     	this.changeProgressBar(progressBarImg);
     }
@@ -18,12 +26,7 @@ Rustica.UI.ProgressBar = function (game, x, y, width, height, backgroundImg, pro
 	else{
 		this.setProgress(0);
 	}
-    
-	if( progressBarOffset ){
-		this.progressBarOffset = progressBarOffset;
-	}
-	
-	console.log(this.progressBarOffset);
+ 	
 	
     return this;
 };
@@ -32,7 +35,7 @@ Rustica.UI.ProgressBar.prototype = Object.create(Rustica.UI.Pane.prototype);
 Rustica.UI.ProgressBar.prototype.constructor = Rustica.UI.Scrollpane;
 
 Rustica.UI.ProgressBar.prototype.setProgress = function(progress) {
-	this.progressBarImg.width = this.width * progress.clamp(0,1);
+	this.progressBarImg.width = Math.floor(this.progressBarWidth * progress.clamp(0,1));
 }
 
 Rustica.UI.ProgressBar.prototype.changeProgressBar = function (progressBarImg) {
@@ -43,7 +46,8 @@ Rustica.UI.ProgressBar.prototype.changeProgressBar = function (progressBarImg) {
     this.progressBarImg = progressBarImg;
     this.progressBarImg.x = this.progressBarOffset["left"];
     this.progressBarImg.y = this.progressBarOffset["top"];
-    this.progressBarImg.width = this.width - (this.progressBarOffset["left"]+this.progressBarOffset["right"]);
+    this.progressBarWidth = this.width - (this.progressBarOffset["left"]+this.progressBarOffset["right"]);
+    this.progressBarImg.width = this.progressBarWidth;
     this.progressBarImg.height = this.height - (this.progressBarOffset["top"]+this.progressBarOffset["bottom"]);
     this.add(this.progressBarImg);
 };
@@ -96,9 +100,11 @@ function create() {
 */
 	var bgImg = new Phaser.Image(game, 0,0, "grey_sliderHorizontal.png");
 	var barImg = new Phaser.Image(game, 0,0, "grey_button00.png");
-	this.progressBar = new Rustica.UI.ProgressBar(game,20,50,100,10,bgImg,barImg,0.5, { left:2, right:2, top:2, bottom:2});
+	this.progressBar = new Rustica.UI.ProgressBar(game,20,50,100,10,bgImg,barImg,0, { left:2, right:2, top:2, bottom:2});
 
 }
+
+var process = 0
 
 function update() {
 	/*
@@ -109,7 +115,8 @@ function update() {
 		console.log("Wheat Harvested: " + profit);
 	}
 	*/
-	
+	process += game.time.physicsElapsed/10.0;
+	this.progressBar.setProgress(process);
 }
 
 function render() {
