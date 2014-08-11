@@ -86,8 +86,10 @@ function create() {
 	cropModule.addField()
 	cropModule.getField(0).resize(9);
 	cropModule.getField(0).plant(crop,game.time.totalElapsedSeconds());
-    var panel = new Phaser.Image(game, 0,0, "panel");
     
+    
+*/
+	var panel = new Phaser.Image(game, 0,0, "panel");
     this.scrollpanel = new Rustica.UI.Scrollpane(game, 20, 50, panel.width, panel.height, panel);
 
     for (i=0; i<100; i++) {
@@ -97,10 +99,12 @@ function create() {
         button.width *= 0.85;
         this.scrollpanel.addItem(button);
     }
-*/
+
 	var bgImg = new Phaser.Image(game, 0,0, "grey_sliderHorizontal.png");
 	var barImg = new Phaser.Image(game, 0,0, "grey_button00.png");
 	this.progressBar = new Rustica.UI.ProgressBar(game,20,50,100,10,bgImg,barImg,0, { left:2, right:2, top:2, bottom:2});
+	
+	this.scrollpanel.addItem(this.progressBar);
 
 }
 
