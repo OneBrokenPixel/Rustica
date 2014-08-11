@@ -1,6 +1,54 @@
-var game = new Phaser.Game(800, 600, Phaser.AUTO, "game", {preload:preload, create:create, update:update, render:render});
+var game = new Phaser.Game(1024, 800, Phaser.AUTO, "game", {preload:preload, create:create, update:update, render:render});
 
-var crop;
+
+
+Rustica.UI.ProgressBar = function (game, x, y, width, height, backgroundImg, progressBarImg, progress, progressBarOffset) {
+    Rustica.UI.Pane.call(this, game, x, y, width, height, backgroundImg);
+    
+    this.progressBarImg = null;
+    this.progressBarOffset = { left:0, right:0, top:0, bottom:0};
+    
+    if(progressBarImg){
+    	this.changeProgressBar(progressBarImg);
+    }
+    	
+    if(progress){
+    	this.setProgress(progress);
+    }	
+	else{
+		this.setProgress(0);
+	}
+    
+	if( progressBarOffset ){
+		this.progressBarOffset = progressBarOffset;
+	}
+	
+	console.log(this.progressBarOffset);
+	
+    return this;
+};
+
+Rustica.UI.ProgressBar.prototype = Object.create(Rustica.UI.Pane.prototype);
+Rustica.UI.ProgressBar.prototype.constructor = Rustica.UI.Scrollpane;
+
+Rustica.UI.ProgressBar.prototype.setProgress = function(progress) {
+	this.progressBarImg.width = this.width * progress.clamp(0,1);
+}
+
+Rustica.UI.ProgressBar.prototype.changeProgressBar = function (progressBarImg) {
+
+	if (this.progressBarImg)
+        this.progressBarImg.destroy();
+
+    this.progressBarImg = progressBarImg;
+    this.progressBarImg.x = this.progressBarOffset["left"];
+    this.progressBarImg.y = this.progressBarOffset["top"];
+    this.progressBarImg.width = this.width - (this.progressBarOffset["left"]+this.progressBarOffset["right"]);
+    this.progressBarImg.height = this.height - (this.progressBarOffset["top"]+this.progressBarOffset["bottom"]);
+    this.add(this.progressBarImg);
+};
+
+
 
 function preload() {
 
@@ -33,17 +81,22 @@ function create() {
 
 	cropModule.addField()
 	cropModule.getField(0).resize(9);
-	cropModule.getField(0).plant(crop,game.time.totalElapsedSeconds());*/
-	
+	cropModule.getField(0).plant(crop,game.time.totalElapsedSeconds());
     var panel = new Phaser.Image(game, 0,0, "panel");
     
     this.scrollpanel = new Rustica.UI.Scrollpane(game, 20, 50, panel.width, panel.height, panel);
 
-    var button = new Phaser.Button(game, 0, 0, "ui", buttonDown, this, 
-                                   "grey_button00.png", "grey_button00.png", 
-                                   "grey_button00.png", "grey_button00.png");
-    button.width *= 0.85;
-    this.scrollpanel.addItem(button);
+    for (i=0; i<100; i++) {
+        var button = new Phaser.Button(game, 0, 0, "ui", buttonDown, this, 
+                                       "grey_button00.png", "grey_button00.png", 
+                                       "grey_button00.png", "grey_button00.png");
+        button.width *= 0.85;
+        this.scrollpanel.addItem(button);
+    }
+*/
+	var bgImg = new Phaser.Image(game, 0,0, "grey_sliderHorizontal.png");
+	var barImg = new Phaser.Image(game, 0,0, "grey_button00.png");
+	this.progressBar = new Rustica.UI.ProgressBar(game,20,50,100,10,bgImg,barImg,0.5, { left:2, right:2, top:2, bottom:2});
 
 }
 

@@ -1,4 +1,4 @@
-Rustica = {};
+/*Rustica = {};
 Rustica.Game = {};
 
 // Agent Constuctor
@@ -42,4 +42,4 @@ Rustica.Game.AgentTaskQueue.prototype.addAgent = function( agent ) {
 	}
 	
 }
-
+*/
