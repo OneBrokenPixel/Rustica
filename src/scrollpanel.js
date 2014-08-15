@@ -1,5 +1,6 @@
 Rustica = {};
 Rustica.UI = {};
+Rustica.Game = {};
 
 Rustica.UI.Pane = function (game, x, y, width, height, backgroundImg) {
     Phaser.Group.call(this, game);
@@ -62,6 +63,7 @@ Rustica.UI.Pane.prototype.changeBackground = function (backgroundImg) {
     this.background.width = this.w;
     this.background.height = this.h;
     this.add(this.background);
+    this.bringToTop(this.content);
 };
 
 Rustica.UI.Pane.prototype.addItem = function(item, x, y) {
