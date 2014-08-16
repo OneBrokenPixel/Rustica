@@ -84,15 +84,16 @@ Rustica.Game.Field = function(game) {
     "Plant_Button.png", "Plant_Button.png", 
     "Plant_Button.png", "Plant_Button.png");
 
-	this.addItem(this.sizeText,10,0);
-	this.addItem(this.costText,10,14);
-	this.addItem(this.progressBar,10,34);
+	this.addItem(this.sizeText,10,40);
+	this.addItem(this.costText,10,54);
+	this.addItem(this.progressBar,10,104);
+	this.addItem(this.applyAction,190,94);
 	
-	this.addItem(this.deleteField,0,0);
-	this.addItem(this.prevCropButton,100,0);
-	this.addItem(this.cropImage, 140,0);
-	this.addItem(this.nextCropButton,190,0);
-	this.addItem(this.applyAction,190,50);
+	this.addItem(this.deleteField,pane.width-this.deleteField.width,0);
+	
+	this.addItem(this.prevCropButton,154,24);
+	this.addItem(this.cropImage, 180,20);
+	this.addItem(this.nextCropButton,250,24);
 
 	return this;
 }
@@ -133,7 +134,7 @@ function create() {
     
 */
 	var panel = new Phaser.Image(game, 0,0, "panel");
-    this.scrollpanel = new Rustica.UI.Scrollpane(game, 20, 50, 400, panel.height, panel);
+    this.scrollpanel = new Rustica.UI.Scrollpane(game, 20, 50, 330, panel.height, panel);
 
 	this.field = new Rustica.Game.Field(game);
 	this.scrollpanel.addItem(this.field);    
