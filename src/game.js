@@ -47,45 +47,98 @@ Rustica.UI.ProgressBar.prototype.changeProgressBar = function (progressBarImg) {
     this.progressBarWidth = this.width - (this.progressBarOffset["left"]+this.progressBarOffset["right"]);
     this.progressBarImg.width = this.progressBarWidth;
     this.progressBarImg.height = this.height - (this.progressBarOffset["top"]+this.progressBarOffset["bottom"]);
-    this.add(this.progressBarImg);
+    this.content.add(this.progressBarImg);
 };
 
 
+
+//var crops = [ new Crop("Empty",  0.0, 0, 0.0), 	new Crop("Wheat",  2.0, 1, 0.1),
+//              new Crop("Potato", 1.0, 2, 0.2), 	new Crop("Carrot", 0.5, 3, 0.3) ];
+
+var crops = [
+				{
+					name : "Empty",
+					image : "empty.png",
+					growthTime: 0.0,
+					value : 0.0,
+					cost : 0.0
+				},
+				{
+					name : "Wheat",
+					image : "wheat.png",
+					growthTime: 2.0,
+					value : 1.0,
+					cost : 0.1
+				},
+				{
+					name : "Potato",
+					image : "potato.png",
+					growthTime: 1.0,
+					value : 2.0,
+					cost : 0.2
+				},
+				{
+					name : "Carrot",
+					image : "carrot.png",
+					growthTime: 0.5,
+					value : 3.0,
+					cost : 0.3
+				},
+				{
+					name : "Corn",
+					image : "corn.png",
+					growthTime: 1,
+					value : 1.0,
+					cost : 0.1
+				},
+				{
+					name : "Parsnip",
+					image : "parsnip.png",
+					growthTime: 1,
+					value : 1.0,
+					cost : 0.1
+				}
+
+];
+
 Rustica.Game.Field = function(game) {
 	var pane = new Phaser.Image(game, 0,0, "cropUI", "crop_pane.png");
-	pane.z = -10;
 	Rustica.UI.Pane.call(this, game, 0, 0, pane.width, pane.height, pane);
 
+	this.fieldText = new Phaser.Text(game, 0, 0, "Field of Wheat", { font: "12pt Courier", fill: "#19cb65", stroke: "#119f4e", strokeThickness: 1 });
 	this.sizeText = new Phaser.Text(game, 0, 0, "Size: ", { font: "12pt Courier", fill: "#19cb65", stroke: "#119f4e", strokeThickness: 1 });
 	this.costText = new Phaser.Text(game, 0, 0, "Cost: ", { font: "12pt Courier", fill: "#19cb65", stroke: "#119f4e", strokeThickness: 1 });
+
+	this.cropIndex = 0;
 
 	var bgImg = new Phaser.Image(game, 0,0, "cropUI", "progressBar_Bg.png");
 	var fgImg = new Phaser.Image(game, 0,0, "cropUI", "progressBar_Fg.png");
 	
 	this.progressBar = new Rustica.UI.ProgressBar(game,0,0,bgImg.width,bgImg.height,bgImg,fgImg,0, { left:2, right:2, top:2, bottom:2});
 	
-	this.deleteField = new Phaser.Button(game, 0, 0, "cropUI", buttonDown, this, 
+	this.deleteField = new Phaser.Button(game, 0, 0, "cropUI", this.removeField, this, 
     "cross.png", "cross.png", 
     "cross.png", "cross.png");
 
 	//deleteField.anchor.setTo(1, 0);
 
-	this.prevCropButton = new Phaser.Button(game, 0, 0, "cropUI", buttonDown, this, 
+	this.prevCropButton = new Phaser.Button(game, 0, 0, "cropUI", this.prevCrop, this, 
 		    "left.png", "left.png", 
 		    "left.png", "left.png");
-	this.nextCropButton = new Phaser.Button(game, 0, 0, "cropUI", buttonDown, this, 
+	this.nextCropButton = new Phaser.Button(game, 0, 0, "cropUI", this.nextCrop, this, 
 		    "right.png", "right.png", 
 		    "right.png", "right.png");
 	
-		    
-	this.cropImage = new Phaser.Image(game, 0,0, "cropUI", "wheat.png");
+	this.setCropImage();
 	
-	this.applyAction = new Phaser.Button(game, 0, 0, "cropUI", buttonDown, this, 
+	this.applyAction = new Phaser.Button(game, 0, 0, "cropUI", this.apply, this, 
     "Plant_Button.png", "Plant_Button.png", 
     "Plant_Button.png", "Plant_Button.png");
 
-	this.addItem(this.sizeText,10,40);
-	this.addItem(this.costText,10,54);
+	this.addItem(this.fieldText,10,16);
+	this.addItem(this.sizeText,10,30);
+	this.addItem(this.costText,10,44);
+	
 	this.addItem(this.progressBar,10,104);
 	this.addItem(this.applyAction,190,94);
 	
@@ -96,10 +149,46 @@ Rustica.Game.Field = function(game) {
 	this.addItem(this.nextCropButton,250,24);
 
 	return this;
-}
+};
 
 Rustica.Game.Field.prototype = Object.create(Rustica.UI.Pane.prototype);
 Rustica.Game.Field.prototype.constructor = Rustica.Game.Field;
+
+	
+
+Rustica.Game.Field.prototype.setCropImage = function (){
+	
+	var crop = crops[this.cropIndex];
+	
+	if(this.cropImage){
+	    console.log(this.cropIndex + " " + crop.name + " " + crop.image ) ;
+		this.cropImage.frameName = crop.image;
+	}
+	else {
+		//this.cropImage = new Phaser.Image(game, 0,0, "cropUI", crop.image);
+		this.cropImage = new Phaser.Image(game, 0,0, "cropUI", "");
+		this.cropImage.frameName = crop.image;
+	}
+	
+};
+	
+Rustica.Game.Field.prototype.removeField = function (){
+    console.log(this.fieldText.text);
+};
+
+Rustica.Game.Field.prototype.nextCrop = function (){
+	this.cropIndex+=1
+	this.cropIndex = this.cropIndex.clamp(0,crops.length-1);
+	this.setCropImage();
+};
+Rustica.Game.Field.prototype.prevCrop = function (){
+	this.cropIndex-=1
+	this.cropIndex = this.cropIndex.clamp(0,crops.length-1);
+	this.setCropImage();
+};
+Rustica.Game.Field.prototype.apply = function (){
+    console.log("apply");
+};
 
 
 function preload() {
