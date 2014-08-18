@@ -110,6 +110,7 @@ Rustica.Game.Field = function(game) {
 	this.costText = new Phaser.Text(game, 0, 0, "Cost: ", { font: "12pt Courier", fill: "#19cb65", stroke: "#119f4e", strokeThickness: 1 });
 
 	this.cropIndex = 0;
+	this.size = 5;
 
 	var bgImg = new Phaser.Image(game, 0,0, "cropUI", "progressBar_Bg.png");
 	var fgImg = new Phaser.Image(game, 0,0, "cropUI", "progressBar_Fg.png");
@@ -129,12 +130,14 @@ Rustica.Game.Field = function(game) {
 		    "right.png", "right.png", 
 		    "right.png", "right.png");
 	
-	this.setCropImage();
+
 	
 	this.applyAction = new Phaser.Button(game, 0, 0, "cropUI", this.apply, this, 
     "Plant_Button.png", "Plant_Button.png", 
     "Plant_Button.png", "Plant_Button.png");
 
+    this.UpdateCrop();
+    
 	this.addItem(this.fieldText,10,16);
 	this.addItem(this.sizeText,10,30);
 	this.addItem(this.costText,10,44);
@@ -156,18 +159,17 @@ Rustica.Game.Field.prototype.constructor = Rustica.Game.Field;
 
 	
 
-Rustica.Game.Field.prototype.setCropImage = function (){
+Rustica.Game.Field.prototype.UpdateCrop = function (){
 	
 	var crop = crops[this.cropIndex];
-	
+	//this.fieldText.text = crop.name + " Field";
+	this.costText.text = "Cost: " + this.size * crop.cost;
 	if(this.cropImage){
 	    console.log(this.cropIndex + " " + crop.name + " " + crop.image ) ;
 		this.cropImage.frameName = crop.image;
 	}
 	else {
-		//this.cropImage = new Phaser.Image(game, 0,0, "cropUI", crop.image);
-		this.cropImage = new Phaser.Image(game, 0,0, "cropUI", "");
-		this.cropImage.frameName = crop.image;
+		this.cropImage = new Phaser.Image(game, 0,0, "cropUI", crop.image);
 	}
 	
 };
@@ -179,12 +181,12 @@ Rustica.Game.Field.prototype.removeField = function (){
 Rustica.Game.Field.prototype.nextCrop = function (){
 	this.cropIndex+=1
 	this.cropIndex = this.cropIndex.clamp(0,crops.length-1);
-	this.setCropImage();
+	this.UpdateCrop();
 };
 Rustica.Game.Field.prototype.prevCrop = function (){
 	this.cropIndex-=1
 	this.cropIndex = this.cropIndex.clamp(0,crops.length-1);
-	this.setCropImage();
+	this.UpdateCrop();
 };
 Rustica.Game.Field.prototype.apply = function (){
     console.log("apply");
