@@ -109,8 +109,7 @@ Rustica.Game.Field = function(game) {
 	this.sizeText = new Phaser.Text(game, 0, 0, "Size: ", { font: "12pt Courier", fill: "#19cb65", stroke: "#119f4e", strokeThickness: 1 });
 	this.costText = new Phaser.Text(game, 0, 0, "Cost: ", { font: "12pt Courier", fill: "#19cb65", stroke: "#119f4e", strokeThickness: 1 });
 
-	this.cropIndex = 0;
-	this.size = 5;
+
 
 	var bgImg = new Phaser.Image(game, 0,0, "cropUI", "progressBar_Bg.png");
 	var fgImg = new Phaser.Image(game, 0,0, "cropUI", "progressBar_Fg.png");
@@ -135,9 +134,14 @@ Rustica.Game.Field = function(game) {
 	this.applyAction = new Phaser.Button(game, 0, 0, "cropUI", this.apply, this, 
     "Plant_Button.png", "Plant_Button.png", 
     "Plant_Button.png", "Plant_Button.png");
-
-    this.UpdateCrop();
     
+    this.cropIndex = 0;
+	this.size = 5;
+	this.currentState = this.states["PLANT"];
+	
+	var crop = crops[this.cropIndex];
+	this.cropImage = new Phaser.Image(game, 0,0, "cropUI", crop.image);
+
 	this.addItem(this.fieldText,10,16);
 	this.addItem(this.sizeText,10,30);
 	this.addItem(this.costText,10,44);
@@ -151,25 +155,32 @@ Rustica.Game.Field = function(game) {
 	this.addItem(this.cropImage, 180,20);
 	this.addItem(this.nextCropButton,250,24);
 
+
+	this.UpdateCrop();	
+
 	return this;
 };
 
 Rustica.Game.Field.prototype = Object.create(Rustica.UI.Pane.prototype);
 Rustica.Game.Field.prototype.constructor = Rustica.Game.Field;
 
-	
+Rustica.Game.Field.prototype.states = {
+                                       PLANT: { value:0, name:"Plant"},
+                                       PLANTING: { value:1, name:"Planting"},
+                                       GROWING: { value:2, name:"Growing"},
+                                       HARVEST: { value:3, name:"Harvest"}
+                                       };
+
 
 Rustica.Game.Field.prototype.UpdateCrop = function (){
 	
 	var crop = crops[this.cropIndex];
-	//this.fieldText.text = crop.name + " Field";
+	this.fieldText.text = crop.name + " Field";
+	this.sizeText.text = "Size: " + this.size;
 	this.costText.text = "Cost: " + this.size * crop.cost;
 	if(this.cropImage){
 	    console.log(this.cropIndex + " " + crop.name + " " + crop.image ) ;
 		this.cropImage.frameName = crop.image;
-	}
-	else {
-		this.cropImage = new Phaser.Image(game, 0,0, "cropUI", crop.image);
 	}
 	
 };
@@ -188,8 +199,13 @@ Rustica.Game.Field.prototype.prevCrop = function (){
 	this.cropIndex = this.cropIndex.clamp(0,crops.length-1);
 	this.UpdateCrop();
 };
+
 Rustica.Game.Field.prototype.apply = function (){
     console.log("apply");
+};
+
+Rustica.Game.Field.prototype.update = function (){
+    
 };
 
 
